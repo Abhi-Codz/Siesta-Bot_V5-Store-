@@ -5,6 +5,11 @@ const fetch = require('cross-fetch');
 const path = require('path');
 const math = require('mathjs')
 const Tesseract = require('tesseract.js')
+const fs = require('fs');
+
+// For the sake of Prefix
+const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+let prefix = config.prefix || '.';
 
 // const{ActivityType} = require('discord.js');
 
@@ -102,24 +107,55 @@ client.on('messageCreate', async (msg) =>
     // let tokens = msg.content.split('');
 
     // console.log(msg.content);
-    if(msg.content === '.siesta')
+    if(msg.content === `${prefix}siesta`)
     {
         const index = Math.floor(Math.random() * replies.length);
         msg.reply(replies[index]);
     }
-    else if(msg.content === '.joke')
+    else if(msg.content === `${prefix}joke`)
     {
         const index = Math.floor(Math.random() * jokes.length);
         msg.reply(jokes[index]);
     }
-    else if(msg.content === '.swing')
+    else if(msg.content === `${prefix}swing`)
     {
         const index = Math.floor(Math.random() * baseball.length);
         msg.reply(baseball[index]);
     }
-    else if(msg.content === '.help')
+    else if(msg.content === `${prefix}help`)
     {
-        msg.reply('PREFIX: ```.```' + 'SIESTA: ```.siesta```' + 'HELP: ```.help```' + 'JOKE: ```.joke```' + 'BASEBALL: ```.swing```' + 'BETA FEATURE: ```.math(text basic operating questions upto algebric equations, or attach the image of question)```' + 'INTERACTION GIF with {@ping}: ```.hug | .pat | .sigh | .dance | .sing | .blush | .cry | .smile | .cuddle | .snuggle | .sleep | .highfive | .jump | .bite | .run | .spank| .choke| .scare | .lick | .coffee | .icecream | .eat | .handhold | .kiss | .punch | .kick | .slap | .fumo | .poke | .boop | .pout | .yo | .bye | .protect | .hide | .lonely | .disappear | .lazy | .yeet | .fbi | .kill | .mad | .angry | .confuse | .scream | .love | .stare | .die | .smug | .smirk | .ok | .neko | .cookie | .cake | .laugh | .sad | .happy```' + 'DEMONSLAYER INTERACTION GIF with {@ping}: ```.breathof(thunder, water, mist and flame) | .hinokami kagura```' + 'MHA INTERACTION GIF with {@ping}: ```.smash | .boom```' + 'JJK INTERACTION GIF with {@ping}: ```.kokusen | .ryoiki tenkai | .hollow purple | .jackpot```' + 'BLEACH INTERACTION GIF with {@ping}: ```.bankai | .shikai | .getsuga tensho```' + 'DRAGON BALL INTERACTION GIF with {@ping}: ```.kamehameha | .transform | .kaioken```' + 'ONE PIECE INTERACTION GIF with {@ping}: ```.diable jambe | .oni giri | .gomu gomu no```' + 'NARUTO INTERACTION GIF with {@ping}: ```.rasengan | .chidori | .amaterasu | .susano | .edo tensei | .shinra tensei```' + "PRETTY GIRL INTERACTION GIF with {@ping}: ```.ve' | .emilia-tan | .aqua-sama```" + "FORGER INTERACTION GIF with {@ping}: ```.anya```" + 'VOLLEYBALL INTERACTION GIF with {@ping}: ```.spike | .set | .serve```' + "JOJO'S INTERACTION GIF with {@ping}: ```.za warudo | .star platinum```" + "HxH INTERACTION GIF WITH {@ping}: ```.nen | .godspeed | .jajanken```");
+        msg.reply('PREFIX: ```.```' + 'SET PREFIX: ```.setprefix```' + 'SIESTA: ```.siesta```' + 'HELP: ```.help```' + 'JOKE: ```.joke```' + 'BASEBALL: ```.swing```' + 'BETA FEATURE: ```.math(text basic operating questions upto algebric equations, or attach the image of question)```' + 'INTERACTION GIF with {@ping}: ```.hug | .pat | .sigh | .dance | .sing | .blush | .cry | .smile | .cuddle | .snuggle | .sleep | .highfive | .jump | .bite | .run | .spank| .choke| .scare | .lick | .coffee | .icecream | .eat | .handhold | .kiss | .punch | .kick | .slap | .fumo | .poke | .boop | .pout | .yo | .bye | .protect | .hide | .lonely | .disappear | .lazy | .yeet | .fbi | .kill | .mad | .angry | .confuse | .scream | .love | .stare | .die | .smug | .smirk | .ok | .neko | .cookie | .cake | .laugh | .sad | .happy```' + 'DEMONSLAYER INTERACTION GIF with {@ping}: ```.breathof(thunder, water, mist and flame) | .hinokami kagura```' + 'MHA INTERACTION GIF with {@ping}: ```.smash | .boom```' + 'JJK INTERACTION GIF with {@ping}: ```.kokusen | .ryoiki tenkai | .hollow purple | .jackpot```' + 'BLEACH INTERACTION GIF with {@ping}: ```.bankai | .shikai | .getsuga tensho```' + 'DRAGON BALL INTERACTION GIF with {@ping}: ```.kamehameha | .transform | .kaioken```' + 'ONE PIECE INTERACTION GIF with {@ping}: ```.diable jambe | .oni giri | .gomu gomu no```' + 'NARUTO INTERACTION GIF with {@ping}: ```.rasengan | .chidori | .amaterasu | .susano | .edo tensei | .shinra tensei```' + "PRETTY GIRL INTERACTION GIF with {@ping}: ```.ve' | .emilia-tan | .aqua-sama```" + "FORGER INTERACTION GIF with {@ping}: ```.anya```" + 'VOLLEYBALL INTERACTION GIF with {@ping}: ```.spike | .set | .serve```' + "JOJO'S INTERACTION GIF with {@ping}: ```.za warudo | .star platinum```" + "HxH INTERACTION GIF WITH {@ping}: ```.nen | .godspeed | .jajanken```");
+    }
+    
+    // Prefix block
+    else if(msg.content.startsWith(`${prefix}setprefix`))
+    {
+        // Setup for prefix
+        const args = msg.content.trim().split(/\s+/);
+        if(args.length !== 2)
+        {
+            return msg.reply(`Usage: \`${prefix}setprefix <newPrefix>\``);
+        }
+
+        // Admins
+        if(!msg.guild || !msg.member?.permissions.has('Administrator'))
+        {
+            return msg.reply("I apologize, however, only the individuals with the stature akin to esteemed purport of admininstrators can change the prefix.")
+        }
+
+        // New Prefix
+        const newPrefix = args[1];
+        if(!/^[^\s]{1,3}$/.test(newPrefix))
+        {
+            return msg.reply("My apologies, however, invalid Prefix.")
+        }
+
+        //Prefix set succesfully
+        prefix = newPrefix;
+        config.prefix = newPrefix;
+        await fs.writeFileSync(`./config.json`, JSON.stringify(config, null, 2));
+        
+        msg.reply(`An Exalting congratulations, the Prefix was updated to \`${prefix}\``);
     }
     
 /*    else if (msg.content === '.help') 
@@ -223,7 +259,7 @@ client.on('messageCreate', async (msg) =>
         msg.channel.send({ embed: [embed]});
     }*/
 
-    else if (msg.content.startsWith(".hug")) 
+    else if (msg.content.startsWith(`${prefix}hug`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehugging&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -277,7 +313,7 @@ client.on('messageCreate', async (msg) =>
         msg.channel.send({ embed: embed });
     }*/
 
-    else if (msg.content.startsWith(".pat")) 
+    else if (msg.content.startsWith(`${prefix}pat`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animepatting&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -307,7 +343,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".cry")) 
+    else if (msg.content.startsWith(`${prefix}cry`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecrying&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -337,7 +373,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".cuddle")) 
+    else if (msg.content.startsWith(`${prefix}cuddle`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecuddling&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -367,7 +403,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".sleep")) 
+    else if (msg.content.startsWith(`${prefix}sleep`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesleeping&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -397,7 +433,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".slap")) 
+    else if (msg.content.startsWith(`${prefix}slap`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeslapping&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -427,7 +463,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".kick")) 
+    else if (msg.content.startsWith(`${prefix}kick`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animekicking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -457,7 +493,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".kiss")) 
+    else if (msg.content.startsWith(`${prefix}kiss`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animekissing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -487,7 +523,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".bite")) 
+    else if (msg.content.startsWith(`${prefix}bite`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animebiting&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -517,7 +553,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".punch")) 
+    else if (msg.content.startsWith(`${prefix}punch`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animepunching&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -547,7 +583,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".dance")) 
+    else if (msg.content.startsWith(`${prefix}dance`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animedance&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -577,7 +613,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".fumo")) 
+    else if (msg.content.startsWith(`${prefix}fumo`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=fumos&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -607,7 +643,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".smash")) 
+    else if (msg.content.startsWith(`${prefix}smash`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=smashMHA&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -637,7 +673,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".breathofthunder")) 
+    else if (msg.content.startsWith(`${prefix}breathofthunder`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=thunderbreathing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -667,7 +703,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".breathofwater")) 
+    else if (msg.content.startsWith(`${prefix}breathofwater`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=waterbreathing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -697,7 +733,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".hinokami kagura")) 
+    else if (msg.content.startsWith(`${prefix}hinokami kagura`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=hinokamikaguradance&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -727,7 +763,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".breathofflame")) 
+    else if (msg.content.startsWith(`${prefix}breathofflame`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=flamebreathingdemonslayer&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -756,7 +792,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
         
-    else if (msg.content.startsWith(".breathofmist")) 
+    else if (msg.content.startsWith(`${prefix}breathofmist`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=mistbreathing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -785,7 +821,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
         
-    else if (msg.content.startsWith(".poke")) 
+    else if (msg.content.startsWith(`${prefix}poke`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animepoking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -814,7 +850,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
         
-    else if (msg.content.startsWith(".boop")) 
+    else if (msg.content.startsWith(`${prefix}boop`)) 
     {
          const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeboop&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -843,7 +879,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
         
-    else if (msg.content.startsWith(".lick")) 
+    else if (msg.content.startsWith(`${prefix}lick`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animelicking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -872,7 +908,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".snuggle")) 
+    else if (msg.content.startsWith(`${prefix}snuggle`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesnuggling&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -901,7 +937,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".blush")) 
+    else if (msg.content.startsWith(`${prefix}blush`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeblushing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -930,7 +966,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".kill")) 
+    else if (msg.content.startsWith(`${prefix}kill`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animekilling&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -959,7 +995,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".handhold")) 
+    else if (msg.content.startsWith(`${prefix}handhold`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehandhold&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -988,7 +1024,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".highfive")) 
+    else if (msg.content.startsWith(`${prefix}highfive`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehighfive&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1017,7 +1053,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".yeet")) 
+    else if (msg.content.startsWith(`${prefix}yeet`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animethrowing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1046,7 +1082,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".fbi")) 
+    else if (msg.content.startsWith(`${prefix}fbi`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animefbi&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1075,7 +1111,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".run")) 
+    else if (msg.content.startsWith(`${prefix}run`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animerunning&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1104,7 +1140,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
         
-    else if (msg.content.startsWith(".pout")) 
+    else if (msg.content.startsWith(`${prefix}pout`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animepouting&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1133,7 +1169,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".disappear")) 
+    else if (msg.content.startsWith(`${prefix}disappear`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animedisappear&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1162,7 +1198,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".yo")) 
+    else if (msg.content.startsWith(`${prefix}yo`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehello&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1191,7 +1227,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".bye")) 
+    else if (msg.content.startsWith(`${prefix}bye`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesayonara&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1220,7 +1256,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".protect")) 
+    else if (msg.content.startsWith(`${prefix}protect`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=nanamikentojjk&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1249,7 +1285,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".lonely")) 
+    else if (msg.content.startsWith(`${prefix}lonely`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animelonely&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1278,7 +1314,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".mad")) 
+    else if (msg.content.startsWith(`${prefix}mad`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animemad&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1307,7 +1343,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".angry")) 
+    else if (msg.content.startsWith(`${prefix}angry`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeangry&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1336,7 +1372,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".hide")) 
+    else if (msg.content.startsWith(`${prefix}hide`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehide&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1365,7 +1401,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".coffee")) 
+    else if (msg.content.startsWith(`${prefix}coffee`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecoffee&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1394,7 +1430,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".confuse")) 
+    else if (msg.content.startsWith(`${prefix}confuse`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeconfused&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1423,7 +1459,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".scream")) 
+    else if (msg.content.startsWith(`${prefix}scream`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animescreaming&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1452,7 +1488,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".scare")) 
+    else if (msg.content.startsWith(`${prefix}scare`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animescaring&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1481,7 +1517,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".icecream")) 
+    else if (msg.content.startsWith(`${prefix}icecream`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeicecream&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1510,7 +1546,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".jump")) 
+    else if (msg.content.startsWith(`${prefix}jump`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animejumping&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1539,7 +1575,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".stare")) 
+    else if (msg.content.startsWith(`${prefix}stare`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animestaring&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1568,7 +1604,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".love")) 
+    else if (msg.content.startsWith(`${prefix}love`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeloving&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1597,7 +1633,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".ok")) 
+    else if (msg.content.startsWith(`${prefix}ok`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animethumbsup&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1626,7 +1662,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".die")) 
+    else if (msg.content.startsWith(`${prefix}die`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animedeath&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1655,7 +1691,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".smug")) 
+    else if (msg.content.startsWith(`${prefix}smug`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesmugging&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1684,7 +1720,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".smile")) 
+    else if (msg.content.startsWith(`${prefix}smile`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesmiling&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1713,7 +1749,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".lazy")) 
+    else if (msg.content.startsWith(`${prefix}lazy`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animelazy&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1742,7 +1778,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".sigh")) 
+    else if (msg.content.startsWith(`${prefix}sigh`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesighing&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1771,7 +1807,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".kokusen")) 
+    else if (msg.content.startsWith(`${prefix}kokusen`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=blackflashjjk&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1807,7 +1843,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".ryoiki tenkai")) 
+    else if (msg.content.startsWith(`${prefix}ryoiki tenkai`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=domainexpansionjjk&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1836,7 +1872,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".bankai")) 
+    else if (msg.content.startsWith(`${prefix}bankai`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=bankaibleach&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1865,7 +1901,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".shikai")) 
+    else if (msg.content.startsWith(`${prefix}shikai`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=shikaibleach&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1894,7 +1930,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".rasengan")) 
+    else if (msg.content.startsWith(`${prefix}rasengan`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=rasengannaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1923,7 +1959,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".chidori")) 
+    else if (msg.content.startsWith(`${prefix}chidori`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=chidorinaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1952,7 +1988,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".sing")) 
+    else if (msg.content.startsWith(`${prefix}sing`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesinging&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -1981,7 +2017,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".kamehameha")) 
+    else if (msg.content.startsWith(`${prefix}kamehameha`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=kamehameha&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2010,7 +2046,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".diable jambe")) 
+    else if (msg.content.startsWith(`${prefix}diable jambe`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=diablejambeonepiece&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2039,7 +2075,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".jackpot")) 
+    else if (msg.content.startsWith(`${prefix}jackpot`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=hakarijjk&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2068,7 +2104,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".ve'")) 
+    else if (msg.content.startsWith(`${prefix}ve'`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=nobarakugisakijjk&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2097,7 +2133,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".transform")) 
+    else if (msg.content.startsWith(`${prefix}transform`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=dragonballtransformation&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2126,7 +2162,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".getsuga tensho")) 
+    else if (msg.content.startsWith(`${prefix}getsuga tensho`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=getsugatenshobleach&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2155,7 +2191,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".kaioken")) 
+    else if (msg.content.startsWith(`${prefix}kaioken`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=dragonballkaioken&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2184,7 +2220,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".eat")) 
+    else if (msg.content.startsWith(`${prefix}eat`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animeeating&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2213,7 +2249,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".anya")) 
+    else if (msg.content.startsWith(`${prefix}anya`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=anyaforger&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2242,7 +2278,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".emilia-tan")) 
+    else if (msg.content.startsWith(`${prefix}emilia-tan`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=emiliarezero&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2271,7 +2307,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".spike")) 
+    else if (msg.content.startsWith(`${prefix}spike`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=haikyuuspike&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2300,7 +2336,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".set")) 
+    else if (msg.content.startsWith(`${prefix}set`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=haikyuuset&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2329,7 +2365,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
     
-    else if (msg.content.startsWith(".serve")) 
+    else if (msg.content.startsWith(`${prefix}serve`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=haikuuserve&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2358,7 +2394,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".smirk")) 
+    else if (msg.content.startsWith(`${prefix}smirk`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesmirking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2387,7 +2423,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".hollow purple")) 
+    else if (msg.content.startsWith(`${prefix}hollow purple`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=gojohollowpurple&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2416,7 +2452,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".aqua-sama")) 
+    else if (msg.content.startsWith(`${prefix}aqua-sama`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=aquakonosuba&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2445,7 +2481,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".neko")) 
+    else if (msg.content.startsWith(`${prefix}neko`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecat&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2474,7 +2510,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".za warudo")) 
+    else if (msg.content.startsWith(`${prefix}za warudo`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=zawarudojojo&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2503,7 +2539,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
      
-    else if (msg.content.startsWith(".star platinum")) 
+    else if (msg.content.startsWith(`${prefix}star platinum`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=starplatinumjojo&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2533,7 +2569,7 @@ client.on('messageCreate', async (msg) =>
     }
 
 
-    else if (msg.content.startsWith(".boom")) 
+    else if (msg.content.startsWith(`${prefix}boom`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=bakugoexplosionmha&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2562,7 +2598,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".amaterasu")) 
+    else if (msg.content.startsWith(`${prefix}amaterasu`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=amaterasunaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2591,7 +2627,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".susano")) 
+    else if (msg.content.startsWith(`${prefix}susano`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=susanonaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2620,7 +2656,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".edo tensei")) 
+    else if (msg.content.startsWith(`${prefix}edo tensei`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=reanimationjutsunaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2649,7 +2685,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".shinra tensei")) 
+    else if (msg.content.startsWith(`${prefix}shinra tensei`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=almightypushnaruto&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2678,7 +2714,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".cookie")) 
+    else if (msg.content.startsWith(`${prefix}cookie`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecookie&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2707,7 +2743,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".cake")) 
+    else if (msg.content.startsWith(`${prefix}cake`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animecake&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2736,7 +2772,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".laugh")) 
+    else if (msg.content.startsWith(`${prefix}laugh`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animelaugh&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2765,7 +2801,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".sad")) 
+    else if (msg.content.startsWith(`${prefix}sad`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animesad&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2794,7 +2830,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".happy")) 
+    else if (msg.content.startsWith(`${prefix}happy`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animehappy&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2823,7 +2859,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".nen")) 
+    else if (msg.content.startsWith(`${prefix}nen`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=nenhunterxhunter&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2852,7 +2888,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".godspeed")) 
+    else if (msg.content.startsWith(`${prefix}godspeed`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=killuagodspeed&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2910,7 +2946,7 @@ client.on('messageCreate', async (msg) =>
         }
     }*/
 
-    else if (msg.content.startsWith(".jajanken")) 
+    else if (msg.content.startsWith(`${prefix}jajanken`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=gonpunch&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2939,7 +2975,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".oni giri")) 
+    else if (msg.content.startsWith(`${prefix}oni giri`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=onigirionepiece&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2968,7 +3004,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".gomu gomu no")) 
+    else if (msg.content.startsWith(`${prefix}gomu gomu no`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=gomugomunoonepiece&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -2997,7 +3033,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".spank")) 
+    else if (msg.content.startsWith(`${prefix}spank`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animespanking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -3026,7 +3062,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".choke")) 
+    else if (msg.content.startsWith(`${prefix}choke`)) 
     {
         const mentionedMember = msg.mentions.members.first();
         let url = `https://api.tenor.com/v1/search?q=animechoking&key=${process.env.TENORKEY}&contentFilter=G`;
@@ -3055,7 +3091,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
-    else if (msg.content.startsWith(".math")) 
+    else if (msg.content.startsWith(`${prefix}math`)) 
     {
         const expression = msg.content.slice(6).trim();
         
