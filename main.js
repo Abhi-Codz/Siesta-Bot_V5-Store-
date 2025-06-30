@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 require("dotenv").config();
 // const {fetchNeko} = require("nekos-best.js");
 const fetch = require('cross-fetch');
@@ -25,9 +25,16 @@ const client = new Client({
 // const welcome = require("./welcome");
 
 client.once('ready', () => {
-    console.log('code name');
-    client.user.setActivity('Custom Message goes hard', { type: 'PLAYING', state: 'Start with `.help` command' });
-  //  welcome(client);
+    console.log('code name'); 
+        client.user.setPresence({
+            activities: [{
+                name: 'Siesta | .help',
+                type: ActivityType.Streaming,
+                url: 'https://www.youtube.com/watch?v=-A8mojwHjzU'
+            }],
+            status: 'online',
+        })
+    //  welcome(client);
 });
 
 client.login(process.env.BOTTOKEN);
