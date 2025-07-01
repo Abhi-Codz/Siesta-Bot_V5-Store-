@@ -131,9 +131,16 @@ client.on('messageCreate', async (msg) =>
     }
     else if(msg.content === `${prefix}help`)
     {
-        msg.reply('PREFIX: ```.```' + 'SET PREFIX: ```.setprefix```' + 'SIESTA: ```.siesta```' + 'HELP: ```.help```' + 'JOKE: ```.joke```' + 'BASEBALL: ```.swing```' + 'BETA FEATURE: ```.math(text basic operating questions upto algebric equations, or attach the image of question)```' + 'INTERACTION GIF with {@ping}: ```.hug | .pat | .sigh | .dance | .sing | .blush | .cry | .smile | .cuddle | .snuggle | .sleep | .highfive | .jump | .bite | .run | .spank| .choke| .scare | .lick | .coffee | .icecream | .eat | .handhold | .kiss | .punch | .kick | .slap | .fumo | .poke | .boop | .pout | .yo | .bye | .protect | .hide | .lonely | .disappear | .lazy | .yeet | .fbi | .kill | .mad | .angry | .confuse | .scream | .love | .stare | .die | .smug | .smirk | .ok | .neko | .cookie | .cake | .laugh | .sad | .happy```' + 'DEMONSLAYER INTERACTION GIF with {@ping}: ```.breathof(thunder, water, mist and flame) | .hinokami kagura```' + 'MHA INTERACTION GIF with {@ping}: ```.smash | .boom```' + 'JJK INTERACTION GIF with {@ping}: ```.kokusen | .ryoiki tenkai | .hollow purple | .jackpot```' + 'BLEACH INTERACTION GIF with {@ping}: ```.bankai | .shikai | .getsuga tensho```' + 'DRAGON BALL INTERACTION GIF with {@ping}: ```.kamehameha | .transform | .kaioken```' + 'ONE PIECE INTERACTION GIF with {@ping}: ```.diable jambe | .oni giri | .gomu gomu no```' + 'NARUTO INTERACTION GIF with {@ping}: ```.rasengan | .chidori | .amaterasu | .susano | .edo tensei | .shinra tensei```' + "PRETTY GIRL INTERACTION GIF with {@ping}: ```.ve' | .emilia-tan | .aqua-sama```" + "FORGER INTERACTION GIF with {@ping}: ```.anya```" + 'VOLLEYBALL INTERACTION GIF with {@ping}: ```.spike | .set | .serve```' + "JOJO'S INTERACTION GIF with {@ping}: ```.za warudo | .star platinum```" + "HxH INTERACTION GIF WITH {@ping}: ```.nen | .godspeed | .jajanken```");
-    }
-    
+        msg.reply('PREFIX: ```.```' + 'SET PREFIX: ```.setprefix```' + 'SIESTA: ```.siesta```' + 'HELP: ```.help```' + 'JOKE: ```.joke```' + 'BASEBALL: ```.swing```' + 'INTERACTION GIF with {@ping}: ```.hug | .pat | .sigh | .dance | .sing | .blush | .cry | .smile | .cuddle | .snuggle | .sleep | .highfive | .jump | .bite | .run | .spank| .choke| .scare | .lick | .coffee | .icecream | .eat | .handhold | .kiss | .punch | .kick | .slap | .fumo | .poke | .boop | .pout | .yo | .bye | .protect | .hide | .lonely | .disappear | .lazy | .yeet | .fbi | .kill | .mad | .angry | .confuse | .scream | .love | .stare | .die | .smug | .smirk | .ok | .neko | .cookie | .cake | .laugh | .sad | .happy```' + 'DEMONSLAYER INTERACTION GIF with {@ping}: ```.breathof(thunder, water, mist and flame) | .hinokami kagura```' + 'MHA INTERACTION GIF with {@ping}: ```.smash | .boom```' + 'JJK INTERACTION GIF with {@ping}: ```.kokusen | .ryoiki tenkai | .hollow purple | .jackpot```' + 'BLEACH INTERACTION GIF with {@ping}: ```.bankai | .shikai | .getsuga tensho```' + 'DRAGON BALL INTERACTION GIF with {@ping}: ```.kamehameha | .transform | .kaioken```' + 'ONE PIECE INTERACTION GIF with {@ping}: ```.diable jambe | .oni giri | .gomu gomu no```' + 'NARUTO INTERACTION GIF with {@ping}: ```.rasengan | .chidori | .amaterasu | .susano | .edo tensei | .shinra tensei```' + "PRETTY GIRL INTERACTION GIF with {@ping}: ```.ve' | .emilia-tan | .aqua-sama```" + "FORGER INTERACTION GIF with {@ping}: ```.anya```" + 'VOLLEYBALL INTERACTION GIF with {@ping}: ```.spike | .set | .serve```' + "JOJO'S INTERACTION GIF with {@ping}: ```.za warudo | .star platinum```" + "HxH INTERACTION GIF WITH {@ping}: ```.nen | .godspeed | .jajanken```");
+    } //  + 'BETA FEATURE {DISCONTINUED}: ```.math(text basic operating questions upto algebric equations, or attach the image of question)```' 
+    /*
+### Beta Command [Discontinued]
+
+__.math__ → Solves mathematical based questions, using either text based prompt, or image.
+_Example:_ `.math 2*10+7 → Case closed. The result of 2*10+7 is 27`
+*/
+
+
     // Prefix block
     else if(msg.content.startsWith(`${prefix}setprefix`))
     {
@@ -3098,6 +3105,7 @@ client.on('messageCreate', async (msg) =>
         }
     }
 
+    /*
     else if (msg.content.startsWith(`${prefix}math`)) 
     {
         const expression = msg.content.slice(6).trim();
@@ -3115,10 +3123,11 @@ client.on('messageCreate', async (msg) =>
         {
             msg.reply('Please provide a mathematical expression or an image containing a mathematical equation.');
         }
-    }
+    } */
 });
 
-async function processMathExpression(expression, msg) 
+
+/*async function processMathExpression(expression, msg) 
 {
     try 
     {
@@ -3181,6 +3190,7 @@ function extractVariables(expression)
     return Array.from(variables);
 }
 
+
 async function processMathImage(imageUrl, msg) 
 {
     try 
@@ -3197,3 +3207,4 @@ async function processMathImage(imageUrl, msg)
         msg.reply('Sorry, there was an error processing the image. Please try again with a clearer image.');
     }
 }
+*/
